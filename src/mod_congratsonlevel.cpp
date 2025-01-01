@@ -114,9 +114,7 @@ uint32 giveAward(Player* player)
 
 class CongratsAnnounce : public PlayerScript
 {
-
 public:
-
     CongratsAnnounce() : PlayerScript("CongratsAnnounce") {}
 
     void OnLogin(Player* player)
@@ -143,142 +141,40 @@ public:
             uint8 level = player->GetLevel();
             uint32 money = 0;
 
-            switch (level)
+            // Check if the level is a multiple of 10
+            if (level % 10 == 0 && oldLevel < level)
             {
-                case 10:
+                money = giveAward(player);
+
+                // If enabled...
+                if (col.CongratsPerLevelEnable)
                 {
-                    if (oldLevel < 10)
+                    std::ostringstream ss;
+                    switch (player->GetSession()->GetSessionDbLocaleIndex())
                     {
-                        money = giveAward(player);
+                        case LOCALE_enUS:
+                        case LOCALE_koKR:
+                        case LOCALE_frFR:
+                        case LOCALE_deDE:
+                        case LOCALE_zhCN:
+                        case LOCALE_zhTW:
+                        case LOCALE_ruRU:
+                        {
+                            ss << "|cffFFFFFF[ |cffFF0000C|cffFFA500O|cffFFFF00N|cff00FF00G|cff00FFFFR|cff6A5ACDA|cffFF00FFT|cff98FB98S|cffFF0000! |cffFFFFFF] : |cff4CFF00 " << player->GetName() << " |cffFFFFFFhas reached |cff4CFF00Level " << std::to_string(level) << "|cffFFFFFF!";
+                            break;
+                        }
+                        case LOCALE_esES:
+                        case LOCALE_esMX:
+                        {
+                            ss << "|cffFFFFFF[ |cffFF0000F|cffFFA500E|cffFFFF00L|cff00FF00I|cff00FFFFC|cff6A5ACDI|cffFF00FFT|cff98FB98A|cff00FF00C|cff00FFFFI|cffFF0000O|cff00FF00N|cff00FFFFE|cffFF00FFS|cffFF0000! |cffFFFFFF] : |cff4CFF00 " << player->GetName() << " |cffFFFFFFha alcanzado |cff4CFF00el nivel " << std::to_string(level) << "|cffFFFFFF!";
+                        }
+                        default:
+                            break;
                     }
+                    sWorld->SendServerMessage(SERVER_MSG_STRING, ss.str().c_str());
                 }
-                break;
 
-                case 20:
-                {
-                    if (oldLevel < 20)
-                    {
-                        money = giveAward(player);
-                    }
-                }
-                break;
-
-                case 30:
-                {
-                    if (oldLevel < 30)
-                    {
-                        money = giveAward(player);
-                    }
-                }
-                break;
-
-                case 40:
-                {
-                    if (oldLevel < 40)
-                    {
-                        money = giveAward(player);
-                    }
-                }
-                break;
-
-                case 50:
-                {
-                    if (oldLevel < 50)
-                    {
-                        money = giveAward(player);
-                    }
-                }
-                break;
-
-                case 60:
-                {
-                    if (oldLevel < 60)
-                    {
-                        money = giveAward(player);
-                    }
-                }
-                break;
-
-                case 70:
-                {
-                    if (oldLevel < 70)
-                    {
-                        money = giveAward(player);
-                    }
-                }
-                break;
-
-                case 80:
-                {
-                    if (oldLevel < 80)
-                    {
-                        money = giveAward(player);
-                    }
-                }
-                break;
-
-                default:
-                    break;
-            }
-
-            // If enabled...
-            if (col.CongratsPerLevelEnable)
-            {
-                // Issue a server notification for the player on level up.
-                std::ostringstream ss;
-                switch (player->GetSession()->GetSessionDbLocaleIndex())
-                {
-                    case LOCALE_enUS:
-                    case LOCALE_koKR:
-                    case LOCALE_frFR:
-                    case LOCALE_deDE:
-                    case LOCALE_zhCN:
-                    case LOCALE_zhTW:
-                    case LOCALE_ruRU:
-                    {
-                        ss << "|cffFFFFFF[ |cffFF0000C|cffFFA500O|cffFFFF00N|cff00FF00G|cff00FFFFR|cff6A5ACDA|cffFF00FFT|cff98FB98S|cffFF0000! |cffFFFFFF] : |cff4CFF00 " << player->GetName() << " |cffFFFFFFhas reached |cff4CFF00Level " << std::to_string(player->GetLevel()) << "|cffFFFFFF!";
-                        break;
-                    }
-                    case LOCALE_esES:
-                    case LOCALE_esMX:
-                    {
-                        ss << "|cffFFFFFF[ |cffFF0000F|cffFFA500E|cffFFFF00L|cff00FF00I|cff00FFFFC|cff6A5ACDI|cffFF00FFT|cff98FB98A|cff00FF00C|cff00FFFFI|cffFF0000O|cff00FF00N|cff00FFFFE|cffFF00FFS|cffFF0000! |cffFFFFFF] : |cff4CFF00 " << player->GetName() << " |cffFFFFFFha alcanzado |cff4CFF00el nivel " << std::to_string(player->GetLevel()) << "|cffFFFFFF!";
-                    }
-                    default:
-                        break;
-                }
-                sWorld->SendServerMessage(SERVER_MSG_STRING, ss.str().c_str());
-            }
-
-            // If level is defined, they hit a reward level.
-            if (!level && col.CongratsPerLevelEnable)
-            {
-                // Issue a server notification for the player on level up.
-                std::ostringstream ss;
-                switch (player->GetSession()->GetSessionDbLocaleIndex())
-                {
-                    case LOCALE_enUS:
-                    case LOCALE_koKR:
-                    case LOCALE_frFR:
-                    case LOCALE_deDE:
-                    case LOCALE_zhCN:
-                    case LOCALE_zhTW:
-                    case LOCALE_ruRU:
-                    {
-                        ss << "|cffFFFFFF[ |cffFF0000C|cffFFA500O|cffFFFF00N|cff00FF00G|cff00FFFFR|cff6A5ACDA|cffFF00FFT|cff98FB98S|cffFF0000! |cffFFFFFF] : |cff4CFF00 " << player->GetName() << " |cffFFFFFFhas reached |cff4CFF00Level " << level << "|cffFFFFFF!";
-                        break;
-                    }
-                    case LOCALE_esES:
-                    case LOCALE_esMX:
-                    {
-                        ss << "|cffFFFFFF[ |cffFF0000F|cffFFA500E|cffFFFF00L|cff00FF00I|cff00FFFFC|cff6A5ACDI|cffFF00FFT|cff98FB98A|cff00FF00C|cff00FFFFI|cffFF0000O|cff00FF00N|cff00FFFFE|cffFF00FFS|cffFF0000! |cffFFFFFF] : |cff4CFF00 " << player->GetName() << " |cffFFFFFFha alcanzado |cff4CFF00el nivel " << level << "|cffFFFFFF!";
-                    }
-                    default:
-                        break;
-                }
-                sWorld->SendServerMessage(SERVER_MSG_STRING, ss.str().c_str());
-
-                // Issue a raid warning to the player
+                // Notify the player with a message about their rewards
                 std::ostringstream ss2;
                 switch (player->GetSession()->GetSessionDbLocaleIndex())
                 {
@@ -302,7 +198,6 @@ public:
                         break;
                 }
                 ChatHandler(player->GetSession()).SendNotification(SERVER_MSG_STRING, ss2.str().c_str());
-                return;
             }
         }
     }
@@ -332,3 +227,4 @@ void AddCongratsOnLevelScripts()
     new CongratsOnLevel();
     new ModCongratsLevelWorldScript();
 }
+
